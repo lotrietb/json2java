@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>JSON to Java</title>
+<script src="/assets/jquery.js"></script>
+</head>
+
+<body>
+Welcome to the JSON to java converter. Paste your JSON object in the <br>textarea below, and see some magic happen.<br><br>
+<textarea style="width: -moz-available; height: 400px" id="json_text" placeholder="Paste JSON Code here">
+</textarea>
+<br>
+<a href="#" id="convert"><button>Convert!</button></a>
+<br>
+<code id="alert"></code>
+</body>
+</html>
+<script type="text/javascript">
+	$("#convert").click(function()
+	{
+		try
+		{
+			var json_text = $("#json_text").val();
+			var json_object = JSON.parse(json_text);
+			
+			var class_string = "public class RootObject{<br><br>";
+			class_string = class_string+"//Variables<br>";
+			/*
+			 *This is the variable generation
+			 */
+			$.each(json_object,function(key, val){
+				class_string = class_string + "private String "+key+ ";<br>";
+				//alert("Key: "+key +"\nValue: "+val);
+				//document.getElementById("alert").innerHTML = class_string;
+			});
+			class_string = class_string+"<br>";
+			
+			/*
+			 *This is the getter and setter generation
+			 */
+			$.each(json_object,function(key, val){
+			
+				//alert("Key: "+key +"\nValue: "+val);
+				class_string = class_string+"//"+key+" getter and setter<br>";
+				 
+				class_string = class_string+"public String get"+key+"()<br>{<br>";
+				class_string = class_string+"&nbsp;&nbsp;&nbsp;&nbsp;return "+key+";<br>}";
+				
+				class_string = class_string+"<br><br>";
+				class_string = class_string+"public String set"+key+"(String new"+key+")<br>{<br>";
+				class_string = class_string+"&nbsp;&nbsp;&nbsp;&nbsp;"+key+" = new"+key+";<br>}";
+				class_string = class_string+"<br><br>";
+			});
+				document.getElementById("alert").innerHTML = class_string;
+			//document.getElementById("alert").innerHTML = "Everything is good!";
+		}catch(err){
+			if( err.message == "JSON.parse: unexpected end of data at line 1 column 1 of the JSON data")
+				document.getElementById("alert").innerHTML = "Please add some JSON data first";//err.message;
+			else
+				document.getElementById("alert").innerHTML = "The JSON String you provided is not structured properly. Please check your json.";
+		}
+	});
+	
+</script>
